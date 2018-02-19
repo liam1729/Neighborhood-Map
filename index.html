@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="css/styles.css"></link>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <script type="text/javascript" src="js/libs/jquery-3.3.1.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_D0unnS8BU7B1ce7wuocXoiqnA27gOYk&callback=initMap" onerror="googleError()"  async defer></script>
+        <script type="text/javascript" src="js/libs/knockout-3.4.2.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        <title>Kent Locations</title>
+    </head>
+
+    <body>
+        <div id="content" class="content" data-bind="css: contentCSS">        
+
+            <header>
+                <div id="menu-button" class="container" data-bind="click: openNav, css: showMenuButton">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                </div> 
+            </header>
+
+            <div id="map" class="map"></div>
+
+        </div>
+
+        <div id="side-bar" class="sidebar" data-bind="css: sidebarCSS">
+
+            <h1>Kent Locations</h1>
+            <button class="close-button" data-bind="click: closeNav">x</button>
+
+            <form id="form" action="#">
+                <input class="search-input" placeholder="Search…" type="search" name="search" data-bind="value: squery, valueUpdate: 'keyup'" autocomplete="off">
+            </form>
+
+            <ul data-bind="template: {name:'place', foreach:markerPlaces}"></ul>
+
+            <script type="text/html" id="place">
+                <li data-bind="text: title, css: { highlight: currentSelection }, click: function(data, event) {$parent.selectMarker(data, event)}"></li>
+            </script>
+            
+        </div>
+
+   
+        
+    </body>
+</html>

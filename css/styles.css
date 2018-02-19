@@ -1,0 +1,154 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+}
+
+a {
+    text-decoration: none;
+}
+
+/**** Header ****/
+header {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    height: 60px;
+}
+
+.container {
+    padding-top: 9px;
+    padding-left: 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.bar1, 
+.bar2, 
+.bar3 {
+    width: 35px;
+    height: 5px;
+    background-color: rgb(51, 51, 51);
+    margin: 6px 0;
+}
+
+.show-button {
+    display: block;
+}
+
+.hide-button {
+    display: none;
+}
+
+/**** Sidebar ****/
+.sidebar {
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(255, 255, 255);
+    overflow: auto;
+    transition: 0.5s;
+} 
+
+.sidebar h1 {
+    margin: 0;
+    padding: 15px 0 0 10px;
+    font-size: 180%;
+    display: inline-block;
+}
+
+.sidebar-small {
+    width: 30%;
+}
+
+.sidebar-large {
+    width: 75%;
+}
+
+.sidebar-closed {
+    width: 0%;
+}
+
+.close-button {
+    float: right;
+    border: none;
+    width: 56px;
+    height: 56px;
+    padding-bottom: 6px;
+    font-size: 250%;
+    color: rgb(51, 51, 51);
+    background-color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+    margin: 20px 0;
+    padding: 0;
+}
+
+li {
+    display: block;
+    margin: 0;
+    height: 50px;
+    padding-left: 10px;
+    font-size: 110%;
+    background-color: rgb(255, 255, 255);
+    line-height: 48px;
+}
+
+li:hover {
+    background-color: rgb(201, 201, 201);
+}
+
+.highlight {
+    background-color: rgb(165, 165, 165);
+}
+
+#form {
+    margin-top: 20px;
+}
+
+.search-input {
+    width: 92%;
+    padding: 8px 15px;
+    margin: 10px;
+    font-size: 110%;
+}
+
+/**** Content ****/
+.map {
+    width: 100%;
+    height: 100%; 
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+}
+
+.content-medium {
+    width: 70%;
+    margin-left: 30%;
+}
+
+.content-small {
+    width: 25%;
+    margin-left: 75%;
+}
+
+.info-window a {
+    color: rgb(50, 24, 146);
+    font-weight: bold;
+}
+
+
+
