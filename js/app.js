@@ -15,13 +15,13 @@ var Place = function (title, location) {
     this.description = "";
     this.wikiUrl = "";
     this.currentSelection = ko.observable(false);
-}
+};
 
 var places = [new Place("Port Lympne Wild Animal Park", { lat: 51.078336, lng: 0.9985535 }),
               new Place("Bedgebury Forest", { lat: 51.0725744, lng: 0.4454053 }),
               new Place("Leeds Castle", { lat: 51.2489929, lng: 0.6282762 }),
               new Place("Canterbury Cathedral", { lat: 51.2798004, lng: 1.0806111 }),
-              new Place("Chatham Historic Dockyard", { lat: 51.3968622, lng: 0.530843 })]
+              new Place("Chatham Historic Dockyard", { lat: 51.3968622, lng: 0.530843 })];
 
 
 var ViewModel = function () {
@@ -32,46 +32,17 @@ var ViewModel = function () {
     self.sidebarCSS = ko.observable("sidebar-closed");
     self.showMenuButton = ko.observable("show-button");
     self.markerPlaces = ko.observableArray(places);
-    self.currentPlace;
+    self.currentPlace = null;
+
 
     /**
      * @description Initialise all the markers on the map and set a callback for when the browser size changes.
      */
     self.init = function () {
         markers = [];
+
         for (var i = 0; i < places.length; i++) {
-            var location = places[i].location;
-            var title = places[i].title;
-
-            var marker = new google.maps.Marker({
-                map: map,
-                position: location,
-                title: title,
-                animation: google.maps.Animation.Drop,
-                id: i
-            });
-
-            places[i].id = i;
-            markers.push(marker);
-
-            // Add a click listenter to bounce the marker, show the info window
-            // and select the place in the list.
-            marker.addListener('click', (function (index, cmarker) {
-                return function () {
-                    cmarker.setAnimation(google.maps.Animation.BOUNCE);
-                    setTimeout(function () {
-                        cmarker.setAnimation(null);
-                    }, 700);
-
-                    if (self.currentPlace) {
-                        self.currentPlace.currentSelection(false);
-                    }
-
-                    self.currentPlace = self.markerPlaces()[index];
-                    self.currentPlace.currentSelection(true);
-                    self.populateInfoWindow(this, self.largeInfoWindow);
-                }
-            })(i, marker));
+           self.createMarker(places[i], i);
         }
 
         // Set a callback to update the page elements when the size of the browser changes.
@@ -80,7 +51,48 @@ var ViewModel = function () {
             matchQuery.addListener(self.widthChange);
             self.widthChange(matchQuery);
         }
-    }
+    };
+
+
+    /**
+     * @description Creates a marker and sets and onClick listener callback.
+     * @param {Place} place 
+     * @param {Number} index 
+     */
+    self.createMarker = function(place, index){
+        var location = place.location;
+        var title = place.title;
+
+        var marker = new google.maps.Marker({
+            map: map,
+            position: location,
+            title: title,
+            animation: google.maps.Animation.Drop,
+            id: index
+        });
+
+        place.id = index;
+        markers.push(marker);
+
+        // Add a click listenter to bounce the marker, show the info window
+        // and select the place in the list.
+        marker.addListener('click', function () {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () {
+                marker.setAnimation(null);
+            }, 700);
+
+            if (self.currentPlace) {
+                self.currentPlace.currentSelection(false);
+            }
+
+            self.currentPlace = places[marker.id];
+            self.currentPlace.currentSelection(true);
+
+            self.populateInfoWindow(marker, self.largeInfoWindow);
+        });
+    };
+
 
     /**
      * @description Updates the CSS classes for the sidebar and content when the browser size changes.
@@ -97,6 +109,7 @@ var ViewModel = function () {
             }
         }
     };
+
 
     /**
      * @description Opens the sidebar, checks the width of the browser to apply the correct css.
@@ -115,6 +128,7 @@ var ViewModel = function () {
         self.showMenuButton("hide-button");
     };
 
+
     /**
      * @description Closes the navigation bar and changes the CSS classes to refit the content.
      */
@@ -124,6 +138,7 @@ var ViewModel = function () {
         self.sidebarCSS("sidebar-closed");
         self.showMenuButton("show-button");
     };
+
 
     /**
      * @description Selects a marker and shows the info window on the map with an animated bounce.
@@ -150,6 +165,7 @@ var ViewModel = function () {
         self.populateInfoWindow(currentMarker, self.largeInfoWindow);
     };
 
+
     /** 
      * @description Searches the places for any that matches the search query.
     */
@@ -165,8 +181,8 @@ var ViewModel = function () {
         self.largeInfoWindow.marker = null;
 
         // Hide all map markers.
-        for (var i = 0; i < markers.length; i++) {
-            markers[i].setMap(null);
+        for (var m = 0; m < markers.length; m++) {
+            markers[m].setMap(null);
         }
 
         // Place all the map markers that are in the current search.
@@ -185,7 +201,8 @@ var ViewModel = function () {
 
         return searchedPlaces;
 
-    }, self)
+    }, self);
+
 
     /**
      * @description Opens a info window for a marker, gets url and description from the wikipedia api.
@@ -199,7 +216,7 @@ var ViewModel = function () {
             var placeObject = places[marker.id];
 
             // Get a description of the place from the wikimedia api and store it in the correct places object.
-            if (placeObject.description == "") {
+            if (placeObject.description === "") {
                 $.ajax({
                     type: "GET",
                     dataType: "json",
@@ -217,7 +234,7 @@ var ViewModel = function () {
             }
 
             // Get a wikipedia url for the marker place and store it in the corrent places object.
-            if (placeObject.wikiUrl == "") {
+            if (placeObject.wikiUrl === "") {
                 $.ajax({
                     url: wikiUrl,
                     dataType: "jsonp",
@@ -247,10 +264,11 @@ var ViewModel = function () {
                 }
             });
         }
-    }
+    };
 
     self.init();
-}
+};
+
 
 /** 
  * @description Show alert if the google maps api has failed to load.
@@ -258,6 +276,7 @@ var ViewModel = function () {
 function googleError() {
     alert("Connection to google maps has failed! Check your internet Connection.");
 }
+
 
 /** 
  * Runs after the google maps api has loaded, creates a new map and view model.
