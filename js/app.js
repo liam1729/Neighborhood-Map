@@ -74,13 +74,16 @@ var ViewModel = function () {
         place.id = index;
         markers.push(marker);
 
-        // Add a click listenter to bounce the marker, show the info window
-        // and select the place in the list.
+        // Add a click listenter to bounce the marker, show the info window, 
+        // pan the map to that marker and select the place in the list.
         marker.addListener('click', function () {
             marker.setAnimation(google.maps.Animation.BOUNCE);
+            map.panTo(marker.getPosition());
+            
             setTimeout(function () {
                 marker.setAnimation(null);
             }, 700);
+
 
             if (self.currentPlace) {
                 self.currentPlace.currentSelection(false);
@@ -162,6 +165,8 @@ var ViewModel = function () {
             };
         })(currentMarker), 700);
 
+        map.panTo(currentMarker.getPosition());
+
         self.populateInfoWindow(currentMarker, self.largeInfoWindow);
     };
 
@@ -169,7 +174,7 @@ var ViewModel = function () {
     /** 
      * @description Searches the places for any that matches the search query.
     */
-    self.markerPlaces = ko.dependentObservable(function () {
+    self.markerPlaces = ko.computed(function () {
         // Find all places that match the search query.
         var search = self.squery().toLowerCase();
         searchedPlaces = ko.utils.arrayFilter(places, function (place) {
@@ -226,7 +231,7 @@ var ViewModel = function () {
                         infoWindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3>' + '<p>' +
                             places[marker.id].description + '...</p><p><a target="_blank" href="' + places[marker.id].wikiUrl + '">Read more on Wikipedia</a></p></div>');
                     },
-                    onerror: function (response) {
+                    error: function (response) {
                         infoWindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3>' +
                             '<p>There was a problem accessing the wikipedia servers! Please check your internet connection.');
                     }
@@ -243,7 +248,7 @@ var ViewModel = function () {
                         infoWindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3>' + '<p>' +
                             places[marker.id].description + '...</p><p><a target="_blank" href="' + places[marker.id].wikiUrl + '">Read more on Wikipedia</a></p></div>');
                     },
-                    onerror: function (response) {
+                    error: function (response) {
                         infoWindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3>' +
                             '<p>There was a problem accessing the wikipedia servers! Please check your internet connection.');
                     }
